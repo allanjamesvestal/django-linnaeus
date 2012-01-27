@@ -1,11 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from linnaeus import admin
-
-class CustomAdmin(admin.LinnaeusAdmin):
-    default_sidebar_template = 'nando/sidebar.html'    
-linnaeus = CustomAdmin()
+linnaeus = admin.LinnaeusAdmin()
 
 urlpatterns = patterns('',
     url(r'', include(linnaeus.urls)),
@@ -24,5 +20,3 @@ urlpatterns += patterns('',
         name='autocomplete_lookup'),
     (r'^comments/', include('django.contrib.comments.urls')),
 )
-
-urlpatterns += staticfiles_urlpatterns()
