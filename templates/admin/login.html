@@ -1,0 +1,88 @@
+{% extends "admin/base_site.html" %}
+
+<!-- LOADING -->
+{% load i18n %}
+
+<!-- BODYCLASS -->
+{% comment %}{% block bodyclass %}login{% endblock %}
+{% block content-class %}content-flexible{% endblock %}
+{% block content_title %}{% endblock %}{% endcomment %}
+
+{% block title %}{{ block.super }}{% endblock %}
+
+<!-- EXTRAHEAD-->
+{% block extrahead %}
+    <script type="text/javascript">
+        (function($) {
+            $(window).load(function(){ $('#id_username').focus(); });
+        })(django.jQuery);
+    </script>
+{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}{% endblock %}
+
+{% block topbar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+<!-- CONTENT -->
+{% block content_wide %}
+<div class="span16">
+    <div class="row">
+        <div id="login-form" class="span6 offset5">
+            <div class="inner">
+            <h1>Log in</h1>
+            <div class="divider"></div>
+            {% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
+                <p class="error-note">
+                    {% blocktrans count form.errors.items|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+                </p>
+                <div class="divider no-border"></div>
+            {% endif %}
+            {% if form.non_field_errors or form.this_is_the_login_form.errors %}
+                {% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
+                    <p class="error-note">{{ error }}</p>
+                    <div class="divider no-border"></div>
+                {% endfor %}
+            {% endif %}
+            {% if error_message %}<p class="error-note login-errors">{{ error_message }}</p><div class="divider no-border"></div>{% endif %}
+            <form action="{{ app_path }}" method="post" class="form-stacked">{% csrf_token %}
+                <fieldset>
+                    <div class="clearfix{% if not form.this_is_the_login_form.errors %}{% if form.username.errors %} error{% endif %}{% endif %}">
+                        <label for="id_username" class="required">{% trans 'Username:' %}</label>
+                        <div class="input">
+                            <input type="text" name="username" id="id_username" />
+                            {% if not form.this_is_the_login_form.errors %}
+                                {% if form.username.errors %}
+                                    {% for error in form.username.errors %}
+                            <div class="help-block">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="clearfix{% if not form.this_is_the_login_form.errors %}{% if form.password.errors %} error{% endif %}{% endif %}">
+                        <label for="id_password" class="required">{% trans 'Password:' %}</label>
+                        <div class="input">
+                            <input type="password" name="password" id="id_password" />
+                            <input type="hidden" name="this_is_the_login_form" value="1" />
+                            <input type="hidden" name="next" value="{{ next }}" />
+                            {% if not form.this_is_the_login_form.errors %}
+                                {% if form.password.errors %}
+                                    {% for error in form.password.errors %}
+                            <div class="help-block">{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+                <input type="submit" class="btn primary pull-right" value="{% trans 'Log in' %}" /></li>
+                <div class="clearfix"></div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

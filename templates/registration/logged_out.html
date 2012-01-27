@@ -1,0 +1,18 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block content-class %}content-flexible{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="../">{% trans 'Home' %}</a> <span class="divider">/</span></li>
+        <li class="active">{% trans 'Logged out' %}</li>
+    </ul>
+{% endblock %}
+
+{% block content_title %}&nbsp;{% endblock %}
+
+{% block content %}
+<h1>{% trans 'You have been logged out' %}.</h1>
+<p>Thanks for spending some quality time with the Brubeck admin today.</p>
+<p>If you'd like, you can always <a href="../"><strong>{% trans 'log in again' %}</strong></a> by clicking the link.</p>
+{% endblock %}

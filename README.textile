@@ -1,0 +1,13 @@
+<pre><code>
+#                                                   
+#       # #    # #    #   ##   ###### #    #  ####  
+#       # ##   # ##   #  #  #  #      #    # #      
+#       # # #  # # #  # #    # #####  #    #  ####  
+#       # #  # # #  # # ###### #      #    #      # 
+#       # #   ## #   ## #    # #      #    # #    # 
+####### # #    # #    # #    # ######  ####   #### 
+</code></pre>
+
+Classification tools for the Django admin.
+
+(Further documentation TK)

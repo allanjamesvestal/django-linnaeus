@@ -1,0 +1,55 @@
+{% extends "admin/base_site.html" %}
+
+<!-- LOADING -->
+{% load i18n adminmedia log admin_types %}
+
+<!-- JAVASCRIPTS -->
+{% block javascripts %}
+    {{ block.super }}
+{% endblock %}
+
+<!-- COLTYPE/BODYCLASS-- >
+{% block bodyclass %}dashboard{% endblock %}
+{% block content-class %}content-grid{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="../">{% trans "Home" %}</a> <span class="divider">/</span></li>
+        <li class="active">{% trans admin_type_verbose|capfirst|escape %}</li>
+    </ul>
+{% endblock %}
+
+{% block content_title %}
+<div class="page-header"><h1>{{ title }}{% if admin_type_description %} <small>{{ admin_type_description|capfirst }}</small>{% endif %}</h1></div>
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+    <div class="app-list">
+        {% if app_list %}
+            {% for app in app_list %}
+                <table class="bordered-table zebra-striped" id="app_{{ app.name|lower }}">
+                    <thead>
+                        <tr><th colspan="3"><a href="{{ app.app_url }}">{% trans app.name %}</a></th></tr>
+                    </thead>
+                    <tbody>
+                    {% for model in app.models %}
+                        <tr>
+                            <td>{% if model.perms.change %}<a href="{{ model.admin_url }}"><strong>{{ model.name }}</strong></a>{% else %}<span><strong>{{ model.name }}</strong></span>{% endif %}</td>
+                            <td class="action add">{% if model.perms.add %}<a href="{{ model.admin_url }}add/" class="addlink">{% trans 'Add' %}</a>{% else %}&nbsp;{% endif %}</li>
+                            <td class="action change"> {% if model.perms.change %}<a href="{{ model.admin_url }}" class="changelink">{% trans 'Change' %}</a>{% else %}&nbsp;{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                    <tbody>
+                </table>
+            {% endfor %}
+        {% else %}
+            <p>{% trans "You don´t have permission to edit anything." %}</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+    {% render_sidebar %}
+{% endblock %}

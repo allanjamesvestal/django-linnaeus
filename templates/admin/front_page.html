@@ -1,0 +1,50 @@
+{% extends "admin/base_site.html" %}
+{% load i18n log admin_types %}
+
+{% block home_active %} class="active"{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li class="active">{% trans "Home" %}</li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+{% for admin_type in app_list %}
+<div class="app-list">
+    <div class="page-header">
+        <h1><a href="{{ admin_type.raw_name }}/">{{ admin_type.verbose_name|capfirst }}</a>{% if admin_type.description %} <small>{{ admin_type.description|capfirst }}</small>{% endif %}</h1>
+    </div>
+    {% for app in admin_type.apps|dictsort:"name" %}
+    <table class="bordered-table zebra-striped">
+        <thead><tr><th colspan="3"><a href="{{ app.app_url }}">{{ app.name }}</a></th></tr></thead>
+        <tbody>
+        {% for model in app.models|dictsort:"admin_url" %}
+            {% if model.perms.change %}
+                <tr>
+                    <td><a href="{{ model.admin_url }}" title="{{ model.name }}"><strong>{{ model.name }}</strong></a></td>
+                    {% if model.perms.add %}
+                    <td class="action add"><a href="{{ model.admin_url }}add/" class="addlink">{% trans 'Add' %}</a></td>
+                    {% else %}
+                    <td class="action add">&nbsp;</td>
+                    {% endif %}
+                    {% if model.perms.change %}
+                    <td class="action change"><a href="{{ model.admin_url }}" class="changelink">{% trans 'Change' %}</a></td>
+                    {% else %}
+                    <td class="action change">&nbsp;</td>
+                    {% endif %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endfor %}
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block sidebar %}
+    {% render_sidebar %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% load i18n log type_logs app_logs %}
+<div class="well">
+    <h2>{% trans 'My recent activity' %}</h2>
+    <div class="module">
+        <div class="accordion">{% if app_label %}{% blocktrans with app_label|capfirst as app %}Activity in {{ app }}{% endblocktrans %}{% else %}{% if admin_type %}{% blocktrans with admin_type_verbose|capfirst as verbose_admin_type %}Activity in {{ verbose_admin_type }}{% endblocktrans %}{% else %}{% trans 'Sitewide activity' %}{% endif %}{% endif %}</div>
+        {% if app_label %}
+            {% get_admin_log_for_type_and_app admin_type app_label 5 as admin_log for_user user %}
+        {% else %}
+            {% if admin_type %}
+                {% get_admin_log_for_type admin_type 5 as admin_log for_user user %}
+            {% else %}
+                {% get_admin_log 5 as admin_log for_user user %}
+            {% endif %}
+        {% endif %}
+        {% if not admin_log %}
+            <p>{% trans 'None available' %}</p>
+        {% else %}
+            <ul class="unstyled">
+                {% for entry in admin_log %}
+                    <li class="{% if entry.is_addition %}add-link{% endif %}{% if entry.is_change %}change-link{% endif %}{% if entry.is_deletion %}delete-link{% endif %}{% if forloop.last %} last{% endif %}">{% if not entry.is_deletion %}<a href="{{ entry.get_admin_url }}">{% endif %}{{ entry.object_repr|truncatewords:6 }}{% if not entry.is_deletion %}</a>{% endif %}<br /><span class="mini quiet">{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</div>

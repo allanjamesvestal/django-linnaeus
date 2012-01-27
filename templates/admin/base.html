@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load adminmedia i18n admin_types %}
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% block blockbots %}
+        <meta name="robots" content="NONE,NOARCHIVE" />
+    {% endblock %}
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    {% block stylesheets %}
+    <link href="{% admin_media_prefix %}css/bootstrap.css" rel="stylesheet">
+    <link href="{% admin_media_prefix %}css/linnaeus.css" rel="stylesheet">
+    {% endblock %}
+
+    {% block extrastyle %}{% endblock %}
+
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+      }
+      {% block style_extras %}{% endblock %}
+    </style>
+
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+    {% block javascripts %}
+    <script type="text/javascript">
+    // GLOBALS
+    var grappelli = {},
+        // TODO: klemens: drop ADMIN_URL
+        ADMIN_URL = "{% url admin:front_page %}",
+        MODEL_URL_ARRAY = {% get_content_types %},
+        DATE_FORMAT = "{% get_date_format %}",
+        TIME_FORMAT = "{% get_time_format %}",
+        DATETIME_FORMAT = "{% get_datetime_format %}";
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="http://autobahn.tablesorter.com/jquery.tablesorter.min.js"></script>
+    <script src="{% admin_media_prefix %}js/bootstrap/bootstrap-dropdown.js"></script>
+    <script src="{% admin_media_prefix %}js/bootstrap/bootstrap-twipsy.js"></script>
+    <script src="{% admin_media_prefix %}js/bootstrap/bootstrap-alerts.js"></script>
+    <script src="{% admin_media_prefix %}jquery/ui/js/jquery-ui-1.8.15.custom.min.js" type="text/javascript"></script>
+    <!-- Grappelli Main JS -->
+    <script src="{% admin_media_prefix %}js/grappelli/grappelli.js" type="text/javascript"></script>
+    <!-- Grappelli jQuery Plugins, Widgets -->
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_collapsible.js" type="text/javascript"></script>
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_collapsible_group.js" type="text/javascript"></script>
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_timepicker.js" type="text/javascript"></script>
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_related_fk.js" type="text/javascript"></script>
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_related_m2m.js" type="text/javascript"></script>
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_related_generic.js" type="text/javascript"></script>
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_autocomplete_fk.js" type="text/javascript"></script>
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_autocomplete_m2m.js" type="text/javascript"></script>
+    <script src="{% admin_media_prefix %}js/grappelli/jquery.grp_autocomplete_generic.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        (function($) {
+            $(document).ready(function() {
+                $(".alert-message").alert();
+            });
+        });
+    </script>
+    {% endblock javascripts %}
+    {% block head_extras %}{% endblock %}
+
+    {% block extrahead %}{% endblock %}
+  </head>
+
+  <body {% if is_popup %}style="padding-top: 10px;"{% else %}onload="window.scrollTo(0,60);"{% endif %}>
+    {% if not is_popup %}
+    {% block topbar %}
+    <div class="topbar" data-dropdown="dropdown">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="{% url admin:front_page %}">{% block branding %}{% endblock %}</a>
+          {% block topbar_nav %}
+          {% render_topbar_nav %}
+          {% endblock %}
+          {% if user.is_staff %}
+          <ul class="nav secondary-nav">
+            <li class="dropdown"><a href="#" class="dropdown-toggle"><span class="nolink">Logged in as </span>{% filter force_escape %}{% firstof user.first_name user.username %}{% endfilter %}</a></p>
+              <ul class="dropdown-menu">
+                <li><a href="{% url admin:auth_user_change user.id %}">{% trans 'Manage profile' %}</a></li>
+                <li><a href="{% url admin:password_change %}">{% trans 'Change password' %}</a></li>
+                <li class="divider"></li>
+                <li><a href="{% url admin:logout %}">{% trans 'Log out' %}</a></li>
+              </ul>
+            </li>
+          </ul>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endblock topbar %}
+    {% endif %}
+
+    <div class="container">
+        {% block breadcrumbs %}{% endblock %}
+    </div>
+
+    <div class="container">
+        {% block pretitle %}{% endblock %}
+
+        {% block object-tools %}{% endblock %}
+        {% block content_title %}{% if title %}<div class="page-header"><h1>{{ title }}</h1></div>{% endif %}{% endblock %}
+        {% if messages %}
+            <div class="row">
+                <ul class="unstyled span16">
+                {% for message in messages %}
+                    <li class="alert-message fade in{% if message.tags %} {{ message.tags }}{% endif %}" data-alert="alert">
+                        <a class="close" href="#">&times;</a>
+                        <p>{{ message }}</p>
+                    </li>
+                {% endfor %}
+                </li>
+            </div>
+        {% endif %}
+
+        <div class="row">
+        {% block content_wide %}
+            <div class="span11">
+            {% block content %}
+            {% endblock content %}
+            </div>
+            <div id="sidebar" class="span5">
+            {% block sidebar %}
+            {% endblock sidebar %}
+            </div>
+        {% endblock content_wide %}
+        </div>
+      {% if not is_popup %}
+      <footer>
+        {% block footer %}
+        <p>Copyright &copy; 2006 &ndash; {% now "Y" %} Albatross <span class="amp">&</span> Co. All rights reserved.</p>
+        {% endblock footer %}
+      </footer>
+      {% endif %}
+    </div>
+  </body>
+</html>

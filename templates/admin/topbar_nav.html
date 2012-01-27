@@ -1,0 +1,18 @@
+<ul class="nav">
+    <li{% if is_front_page %} class="active"{% endif %}><a href="{% url admin:front_page %}">Home</a></li>
+    {% for type in all_admin_types|slice:":4" %}
+    <li{% if type.admin_type == admin_type %} class="active"{% endif %}>
+        <a href="{% url admin:front_page %}{{ type.admin_type }}/">{{ type.admin_type_verbose|capfirst }}</a>
+    </li>
+    {% endfor %}
+    {% if all_admin_types|length > 4 %}
+    <li class="{% if more_active %}active {% endif %}dropdown">
+        <a href="#" class="dropdown-toggle">More</a>
+        <ul class="dropdown-menu">
+        {% for type in all_admin_types|slice:"4:" %}
+            <li{% if type.admin_type == admin_type %} class="active"{% endif %}><a href="{% url admin:front_page %}{{ type.admin_type }}/">{{ type.admin_type_verbose|capfirst }}</a></li>
+        {% endfor %}
+        </ul>
+    </li>
+    {% endif %}
+</ul>

@@ -1,0 +1,74 @@
+{% extends "admin/base_site.html" %}
+
+<!-- LOADING -->
+{% load i18n admin_types %}
+
+{% block topbar_nav %}
+    {% admin_type_from_object object %}
+    {{ block.super }}
+{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+    {% admin_type_from_object object %}
+    <ul class="breadcrumb"> 
+        <li><a href="../../../../../">{% trans 'Home' %}</a> <span class="divider">/</span></li>
+        <li><a href="../../../../">{{ admin_type_verbose }}</a> <span class="divider">/</span></li>
+        <li><a href="../../../">{{ app_label|capfirst }}</a> <span class="divider">/</span></li>
+        <li><a href="../../">{{ module_name }}</a> <span class="divider">/</span></li>
+        <li><a href="../">{{ object|truncatewords:"12" }}</a> <span class="divider">/</span></li>
+        <li class="active">{% trans 'History' %}</li>
+    </ul>
+{% endblock %}
+
+{% block stock_active %} class="active"{% endblock %}
+
+{% block content_title %}<div class="page-header"><h2>{{ object|truncatewords:"6" }} <small>Change history</small></h2></div>{% endblock %}
+
+{% block object-tools %}
+    {% if not is_popup %}
+        <ul class="pills">
+            {% block object-tools-items %}
+                <li><a class="edit" href="../">{% trans "Edit" %}</a></li>
+                <li class="active"><a class="history" href="">{% trans "History" %}</a></li>
+                {% if object.get_absolute_url %}<li><a class="onsite" href="../../../../../r/{{ action_list.0.content_type_id }}/{{ object.id }}/" class="focus" target="_blank">{% trans "View on site" %}</a></li>{% endif%}
+            {% endblock %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content_wide %}
+    <div class="span16">
+        <div class="object-history">
+            {% if action_list %}
+                <table id="change-history" class="bordered-table zebra-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">{% trans 'Date/time' %}</th>
+                            <th scope="col">{% trans 'User' %}</th>
+                            <th scope="col">{% trans 'Action' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for action in action_list %}
+                            <tr>
+                                <th scope="row">{{ action.action_time|date:_("DATETIME_FORMAT") }}</th>
+                                <td>{{ action.user.username }}{% if action.user.get_full_name %} ({{ action.user.get_full_name }}){% endif %}</td>
+                                <td>
+                                {% ifequal forloop.counter 1 %}
+                                    {% trans "Created object" %}
+                                {% else %}
+                                    {{ action.change_message }}
+                                {% endifequal %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>{% trans "This object doesn't have a change history. It probably wasn't added via this admin site." %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

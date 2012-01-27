@@ -1,0 +1,10 @@
+{% extends "admin/base.html" %}
+{% load i18n admin_types %}
+
+{% block title %}{% if title %}{{ title }} | {% endif %}{% get_admin_title %}{% endblock %}
+
+{% block branding %}
+{% get_admin_title %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
